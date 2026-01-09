@@ -1,0 +1,163 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#DA68A0", "font": {"color": "black"}, "id": 1, "label": "Paternal_Grandfather", "shape": "dot", "size": 25, "title": "Paternal_Grandfather | Age: 75 | Grandparents"}, {"color": "#DA68A0", "font": {"color": "black"}, "id": 2, "label": "Paternal_Grandmother", "shape": "dot", "size": 25, "title": "Paternal_Grandmother | Age: 72 | Grandparents"}, {"color": "#4CAF50", "font": {"color": "black"}, "id": 3, "label": "Father", "shape": "dot", "size": 25, "title": "Father | Age: 45 | Parents / Uncles / Aunts"}, {"color": "#4CAF50", "font": {"color": "black"}, "id": 4, "label": "Paternal_Uncle_2", "shape": "dot", "size": 25, "title": "Paternal_Uncle_2 | Age: 43 | Parents / Uncles / Aunts"}, {"color": "#4CAF50", "font": {"color": "black"}, "id": 5, "label": "Paternal_Uncle_3", "shape": "dot", "size": 25, "title": "Paternal_Uncle_3 | Age: 41 | Parents / Uncles / Aunts"}, {"color": "#4CAF50", "font": {"color": "black"}, "id": 6, "label": "Paternal_Aunt_1", "shape": "dot", "size": 25, "title": "Paternal_Aunt_1 | Age: 39 | Parents / Uncles / Aunts"}, {"color": "#4CAF50", "font": {"color": "black"}, "id": 7, "label": "Paternal_Aunt_2", "shape": "dot", "size": 25, "title": "Paternal_Aunt_2 | Age: 37 | Parents / Uncles / Aunts"}, {"color": "#4CAF50", "font": {"color": "black"}, "id": 8, "label": "Paternal_Aunt_3", "shape": "dot", "size": 25, "title": "Paternal_Aunt_3 | Age: 35 | Parents / Uncles / Aunts"}, {"color": "#F4CE14", "font": {"color": "black"}, "id": 9, "label": "You", "shape": "dot", "size": 25, "title": "You | Age: 22 | Children"}, {"color": "#F4CE14", "font": {"color": "black"}, "id": 10, "label": "Sibling_1", "shape": "dot", "size": 25, "title": "Sibling_1 | Age: 20 | Children"}, {"color": "#F4CE14", "font": {"color": "black"}, "id": 11, "label": "Cousin_P1", "shape": "dot", "size": 25, "title": "Cousin_P1 | Age: 18 | Children"}, {"color": "#F4CE14", "font": {"color": "black"}, "id": 12, "label": "Cousin_P2", "shape": "dot", "size": 25, "title": "Cousin_P2 | Age: 16 | Children"}, {"color": "#F4CE14", "font": {"color": "black"}, "id": 13, "label": "Cousin_P3", "shape": "dot", "size": 25, "title": "Cousin_P3 | Age: 19 | Children"}, {"color": "#F4CE14", "font": {"color": "black"}, "id": 14, "label": "Cousin_P4", "shape": "dot", "size": 25, "title": "Cousin_P4 | Age: 17 | Children"}, {"color": "#F4CE14", "font": {"color": "black"}, "id": 15, "label": "Cousin_P5", "shape": "dot", "size": 25, "title": "Cousin_P5 | Age: 14 | Children"}, {"color": "#F4CE14", "font": {"color": "black"}, "id": 16, "label": "Cousin_P6", "shape": "dot", "size": 25, "title": "Cousin_P6 | Age: 12 | Children"}, {"color": "#F4CE14", "font": {"color": "black"}, "id": 17, "label": "Cousin_P7", "shape": "dot", "size": 25, "title": "Cousin_P7 | Age: 13 | Children"}, {"color": "#F4CE14", "font": {"color": "black"}, "id": 18, "label": "Cousin_P8", "shape": "dot", "size": 25, "title": "Cousin_P8 | Age: 11 | Children"}, {"color": "#F4CE14", "font": {"color": "black"}, "id": 19, "label": "Cousin_P9", "shape": "dot", "size": 25, "title": "Cousin_P9 | Age: 10 | Children"}, {"color": "#F4CE14", "font": {"color": "black"}, "id": 20, "label": "Cousin_P10", "shape": "dot", "size": 25, "title": "Cousin_P10 | Age: 8 | Children"}, {"color": "#DA68A0", "font": {"color": "black"}, "id": 21, "label": "Maternal_Grandfather", "shape": "dot", "size": 25, "title": "Maternal_Grandfather | Age: 73 | Grandparents"}, {"color": "#DA68A0", "font": {"color": "black"}, "id": 22, "label": "Maternal_Grandmother", "shape": "dot", "size": 25, "title": "Maternal_Grandmother | Age: 70 | Grandparents"}, {"color": "#4CAF50", "font": {"color": "black"}, "id": 23, "label": "Maternal_Uncle_1", "shape": "dot", "size": 25, "title": "Maternal_Uncle_1 | Age: 44 | Parents / Uncles / Aunts"}, {"color": "#4CAF50", "font": {"color": "black"}, "id": 24, "label": "Maternal_Uncle_2", "shape": "dot", "size": 25, "title": "Maternal_Uncle_2 | Age: 42 | Parents / Uncles / Aunts"}, {"color": "#4CAF50", "font": {"color": "black"}, "id": 25, "label": "Mother", "shape": "dot", "size": 25, "title": "Mother | Age: 40 | Parents / Uncles / Aunts"}, {"color": "#4CAF50", "font": {"color": "black"}, "id": 26, "label": "Maternal_Aunt_2", "shape": "dot", "size": 25, "title": "Maternal_Aunt_2 | Age: 38 | Parents / Uncles / Aunts"}, {"color": "#F4CE14", "font": {"color": "black"}, "id": 27, "label": "Cousin_M1", "shape": "dot", "size": 25, "title": "Cousin_M1 | Age: 15 | Children"}, {"color": "#F4CE14", "font": {"color": "black"}, "id": 28, "label": "Cousin_M2", "shape": "dot", "size": 25, "title": "Cousin_M2 | Age: 13 | Children"}, {"color": "#F4CE14", "font": {"color": "black"}, "id": 31, "label": "Cousin_M5", "shape": "dot", "size": 25, "title": "Cousin_M5 | Age: 9 | Children"}, {"color": "#F4CE14", "font": {"color": "black"}, "id": 32, "label": "Cousin_M6", "shape": "dot", "size": 25, "title": "Cousin_M6 | Age: 7 | Children"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "gray", "from": 1, "label": "PARENT_OF", "to": 3, "width": 1}, {"arrows": "to", "color": "gray", "from": 1, "label": "PARENT_OF", "to": 4, "width": 1}, {"arrows": "to", "color": "gray", "from": 1, "label": "PARENT_OF", "to": 5, "width": 1}, {"arrows": "to", "color": "gray", "from": 1, "label": "PARENT_OF", "to": 6, "width": 1}, {"arrows": "to", "color": "gray", "from": 1, "label": "PARENT_OF", "to": 7, "width": 1}, {"arrows": "to", "color": "gray", "from": 1, "label": "PARENT_OF", "to": 8, "width": 1}, {"arrows": "to", "color": "gray", "from": 2, "label": "PARENT_OF", "to": 3, "width": 1}, {"arrows": "to", "color": "gray", "from": 2, "label": "PARENT_OF", "to": 4, "width": 1}, {"arrows": "to", "color": "gray", "from": 2, "label": "PARENT_OF", "to": 5, "width": 1}, {"arrows": "to", "color": "gray", "from": 2, "label": "PARENT_OF", "to": 6, "width": 1}, {"arrows": "to", "color": "gray", "from": 2, "label": "PARENT_OF", "to": 7, "width": 1}, {"arrows": "to", "color": "gray", "from": 2, "label": "PARENT_OF", "to": 8, "width": 1}, {"arrows": "to", "color": "gray", "from": 3, "label": "PARENT_OF", "to": 9, "width": 1}, {"arrows": "to", "color": "gray", "from": 3, "label": "PARENT_OF", "to": 10, "width": 1}, {"arrows": "to", "color": "gray", "from": 4, "label": "PARENT_OF", "to": 11, "width": 1}, {"arrows": "to", "color": "gray", "from": 4, "label": "PARENT_OF", "to": 12, "width": 1}, {"arrows": "to", "color": "gray", "from": 5, "label": "PARENT_OF", "to": 13, "width": 1}, {"arrows": "to", "color": "gray", "from": 5, "label": "PARENT_OF", "to": 14, "width": 1}, {"arrows": "to", "color": "gray", "from": 6, "label": "PARENT_OF", "to": 15, "width": 1}, {"arrows": "to", "color": "gray", "from": 6, "label": "PARENT_OF", "to": 16, "width": 1}, {"arrows": "to", "color": "gray", "from": 7, "label": "PARENT_OF", "to": 17, "width": 1}, {"arrows": "to", "color": "gray", "from": 7, "label": "PARENT_OF", "to": 18, "width": 1}, {"arrows": "to", "color": "gray", "from": 8, "label": "PARENT_OF", "to": 19, "width": 1}, {"arrows": "to", "color": "gray", "from": 8, "label": "PARENT_OF", "to": 20, "width": 1}, {"arrows": "to", "color": "gray", "from": 21, "label": "PARENT_OF", "to": 23, "width": 1}, {"arrows": "to", "color": "gray", "from": 21, "label": "PARENT_OF", "to": 24, "width": 1}, {"arrows": "to", "color": "gray", "from": 21, "label": "PARENT_OF", "to": 25, "width": 1}, {"arrows": "to", "color": "gray", "from": 21, "label": "PARENT_OF", "to": 26, "width": 1}, {"arrows": "to", "color": "gray", "from": 22, "label": "PARENT_OF", "to": 23, "width": 1}, {"arrows": "to", "color": "gray", "from": 22, "label": "PARENT_OF", "to": 24, "width": 1}, {"arrows": "to", "color": "gray", "from": 22, "label": "PARENT_OF", "to": 25, "width": 1}, {"arrows": "to", "color": "gray", "from": 22, "label": "PARENT_OF", "to": 26, "width": 1}, {"arrows": "to", "color": "gray", "from": 23, "label": "PARENT_OF", "to": 27, "width": 1}, {"arrows": "to", "color": "gray", "from": 24, "label": "PARENT_OF", "to": 28, "width": 1}, {"arrows": "to", "color": "gray", "from": 25, "label": "PARENT_OF", "to": 9, "width": 1}, {"arrows": "to", "color": "gray", "from": 25, "label": "PARENT_OF", "to": 10, "width": 1}, {"arrows": "to", "color": "gray", "from": 26, "label": "PARENT_OF", "to": 31, "width": 1}, {"arrows": "to", "color": "gray", "from": 26, "label": "PARENT_OF", "to": 32, "width": 1}, {"arrows": "to", "color": "red", "from": 3, "label": "SPOUSE_OF", "to": 25, "width": 3}, {"arrows": "to", "color": "red", "from": 21, "label": "SPOUSE_OF", "to": 22, "width": 3}, {"arrows": "to", "color": "red", "from": 1, "label": "SPOUSE_OF", "to": 2, "width": 3}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.15,
+            "damping": 0.09,
+            "nodeDistance": 300,
+            "springConstant": 0.03,
+            "springLength": 300
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
